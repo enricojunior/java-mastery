@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.io.Serializable;
 
 public class SchoolHELP {
     private ArrayList<School> schoolList;
@@ -22,7 +21,7 @@ public class SchoolHELP {
         schoolList.add(newSchool);
     }
 
-    public void addUser(user newUser){
+    public void addUser(User newUser){
         userList.add(newUser);
     }
 }

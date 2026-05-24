@@ -15,32 +15,32 @@ abstract public class User implements Comparable<User> {
         this.phone = "123";
     }
 
-    public User(username, password, fullname, email, phone){
-        setUsername(username);
-        setPassword(password);
-        setfullName(fullname);
-        setEmail(email);
-        setPassword(password);
+    public User(String username, String password, String fullname, String email, String phone){
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.email = email;
+        this.phone = phone;
     }
 
-    public void setUsername(username){
+    public void setUsername(String username){
         this.username = username;
     }
 
-    public void setPassword(password){
+    public void setPassword(String password){
         this.password = password;
     }
 
-    public void setfullName(fullname){
+    public void setfullName(String fullname){
         this.fullname = fullname;
     }
 
-    public void setEmail(email){
+    public void setEmail(String email){
         this.email = email;
     }
 
-    public void setPassword(password){
-        this.password = password;
+    public void setPhone(String phone){
+        this.phone = phone;
     }
 
     public String getUsername(){
@@ -59,8 +59,8 @@ abstract public class User implements Comparable<User> {
         return email;
     }
 
-    public String getPassword(){
-        return password;
+    public String getPhone(){
+        return phone;
     }
 
     @Override
