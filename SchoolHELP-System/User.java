@@ -42,4 +42,42 @@ abstract public class User implements Comparable<User> {
     public void setPassword(password){
         this.password = password;
     }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public String Password(){
+        return password;
+    }
+
+    public String getfullName(){
+        return fullname;
+    }
+
+    public String getEmail(){
+        return email;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+
+        if(!(obj instanceof User)){
+            return false;
+        }
+
+        User user = (User) obj;
+        if(user.getUsername().equals(this.username)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
