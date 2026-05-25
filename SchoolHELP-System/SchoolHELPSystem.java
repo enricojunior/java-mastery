@@ -18,14 +18,54 @@ public class SchoolHELPSystem {
                 System.out.print("Enter the school's city: ");
                 schoolCity = (System.console().readLine());
 
-                School newSchool = new School(schoolName, schoolAddress, schoolCity);
-                System.out.println("\nSuccessfully registered a new school.");
-                Stream.of("\nDetails of the registered school: ",
+                if(SchoolHELP.getSchoolList().stream().anyMatch(e -> e.getSchoolName().equals(schoolName))){
+                    System.out.println("\nSorry. This school has been registered to the system.\n");    
+                } else {
+                    School newSchool = new School(schoolName, schoolAddress, schoolCity);
+                    System.out.println("\nSuccessfully registered a new school.");
+                    Stream.of("\nDetails of the registered school: ",
                           "Registered School's Name:\t" + newSchool.getSchoolName(),
                           "Registered School's ID:\t\t" + newSchool.getSchoolID(),
                           "Registered School's Address:\t" + newSchool.getAddress(),
                           "Registered School's City:\t" + newSchool.getCity() + "\n").forEach(System.out::println);
-                return newSchool;
+                    return newSchool;
+                }
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
+    private static SchoolAdmin registerSchoolAdmin(School school){
+        while(true){
+            try {
+                String username, password, fullname, email, phone, position;
+                int staffID;
+
+                System.out.print("Enter the new school administrator's username: ");
+                username = (System.console().readLine());
+                System.out.print("Enter the new school administrator's password: ");
+                password = (System.console().readLine());
+                System.out.print("Enter the new school administrator's full name: ");
+                fullname = (System.console().readLine());
+                System.out.print("Enter the new school administrator's email: ");
+                email = (System.console().readLine());
+                System.out.print("Enter the new school administrator's phone number: ");
+                phone = (System.console().readLine());
+                System.out.print("Enter the new school administrator's staff ID: ");
+                staffID = Integer.parseInt((System.console().readLine()));
+                System.out.print("Enter the new school administrator's phone position: ");
+                position = (System.console().readLine());
+                
+                if(SchoolHELP.getSchoolAdminList().stream().anyMatch(e -> e.getUsername().equals(username) && e.getEmail().equals(email) && e.getStaffID() == staffID)){
+                    System.out.println("\nSorry. The school administrator's data has already been taken.\n");
+                } else {
+                    SchoolAdmin schoolAdmin = new SchoolAdmin(username, password, fullname, email, phone, staffID, position, school);
+                    System.out.println("\nSuccessfully registered a new school administrator.");
+                    Stream.of("\nNew School Administrator's credentials: ",
+                          "Username: " + schoolAdmin.getUsername(),
+                          "Password: " + schoolAdmin.getPassword()).forEach(System.out::println);
+                    return schoolAdmin;
+                }
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -90,6 +130,8 @@ public class SchoolHELPSystem {
                         try {
                             School newSchool = registerSchool();
                             SchoolHELP.addSchool(newSchool);
+                            SchoolAdmin newSchoolAdmin = registerSchoolAdmin(newSchool);
+                            SchoolHELP.addUser(newSchoolAdmin);
                         } catch(Exception e){
                             System.out.println("\nALERT: " + e.getMessage());
                         }

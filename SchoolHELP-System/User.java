@@ -47,7 +47,7 @@ abstract public class User implements Comparable<User> {
         return username;
     }
 
-    public String Password(){
+    public String getPassword(){
         return password;
     }
 
