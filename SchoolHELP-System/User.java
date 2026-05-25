@@ -63,6 +63,13 @@ abstract public class User implements Comparable<User> {
         return phone;
     }
 
+    public boolean isSchoolAdmin(){
+        if(this instanceof SchoolAdmin){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj){
@@ -79,5 +86,12 @@ abstract public class User implements Comparable<User> {
         } else {
             return false;
         }
+    }
+
+    public int compareTo(User user){
+        if(this == user){
+            return 0;
+        }
+        return (this.getfullName().compareTo(user.fullname));
     }
 }
