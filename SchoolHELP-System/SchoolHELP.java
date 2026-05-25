@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class SchoolHELP {
     private ArrayList<School> schoolList;
@@ -23,5 +24,13 @@ public class SchoolHELP {
 
     public void addUser(User newUser){
         userList.add(newUser);
+    }
+
+    public ArrayList<School> getSchoolList(){
+        return schoolList;
+    }
+
+    public ArrayList<User> getUserList(){
+        return userList;
     }
 }
