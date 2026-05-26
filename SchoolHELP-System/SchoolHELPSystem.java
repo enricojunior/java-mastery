@@ -233,11 +233,7 @@ public class SchoolHELPSystem {
         SchoolAdmin loggedSchoolAdmin = ((SchoolAdmin) loggedUser);
 
         while(true){
-            Stream.of("\nLogin as: " + loggedSchoolAdmin.getfullName() + ".",
-                      "Position: " + loggedSchoolAdmin.getPosition() + ".",
-                      "School ID\t:" + loggedSchoolAdmin.getSchool().getSchoolID() + ".",
-                      "School Name\t:" + loggedSchoolAdmin.getSchool().getSchoolName() + ".\n").forEach(System.out::println);
-            generateSchoolAdministratorMenu();
+            generateSchoolAdministratorMenu(loggedSchoolAdmin);
             try {
                 System.out.print("Option: ");
                 schoolAdministratorOpt = Integer.parseInt(System.console().readLine());
@@ -278,8 +274,12 @@ public class SchoolHELPSystem {
                   "[1] Register School and Administrator\n",
                   "[0] Log Out").forEach(System.out::println);
     }
-    public static void generateSchoolAdministratorMenu(){
+    public static void generateSchoolAdministratorMenu(SchoolAdmin schoolAdmin){
         Stream.of("School Administrator's Home Page",
+                  "--------------------------------",       
+                  "Login as: " + schoolAdmin.getfullName() + ". Position: " + schoolAdmin.getPosition() + ".",
+                  "School ID\t: " + schoolAdmin.getSchool().getSchoolID() + ".",
+                  "School Name\t: " + schoolAdmin.getSchool().getSchoolName() + ".",
                   "--------------------------------",
                   "[1] Change Password",
                   "[2] Update Profile\n",
