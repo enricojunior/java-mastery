@@ -40,15 +40,26 @@ public class SchoolHELP {
         return schoolAdminList;        
     }
 
-    public boolean isUserTaken(String username, String fullname, String email){
-        for(User user : userList){
-            if(user.getUsername().equals(username) 
-               && user.getfullName().equals(fullname)
-               && user.getEmail().equals(email)){
-                return true;
-            }
+    public boolean isSchoolRegistered(String schoolName){
+        School school = getSchoolList().stream().filter(e -> e.getSchoolName().equalsIgnoreCase(schoolName))
+                                                .findFirst().orElse(null);
+        if(school != null){
+            return true;
         }
         return false;
+    }
+
+    public School findSchoolByName(String schoolName){
+        return getSchoolList().stream().filter(e -> e.getSchoolName().equalsIgnoreCase(schoolName)).findFirst().orElse(null);
+    }
+
+    public User getUser(String username, String password){
+        for(User user : getUserList()){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        return null;
     }
 
     public boolean isUserSchoolAdmin(String schoolAdminUsername, String schoolAdminPassword){

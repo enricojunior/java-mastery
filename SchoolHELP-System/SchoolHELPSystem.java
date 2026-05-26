@@ -19,15 +19,18 @@ public class SchoolHELPSystem {
                 schoolCity = (System.console().readLine());
 
                 if(SchoolHELP.getSchoolList().stream().anyMatch(e -> e.getSchoolName().equals(schoolName))){
-                    System.out.println("\nSorry. This school has been registered to the system.\n");    
+                    System.out.println("\nThis school has been registered to the system.");  
+                    System.out.println("Skipping to the school administrator's registration.\n");
+                    School findSchool = SchoolHELP.findSchoolByName(schoolName);
+                    return findSchool;  
                 } else {
                     School newSchool = new School(schoolName, schoolAddress, schoolCity);
                     System.out.println("\nSuccessfully registered a new school.");
                     Stream.of("\nDetails of the registered school: ",
-                          "Registered School's Name:\t" + newSchool.getSchoolName(),
-                          "Registered School's ID:\t\t" + newSchool.getSchoolID(),
-                          "Registered School's Address:\t" + newSchool.getAddress(),
-                          "Registered School's City:\t" + newSchool.getCity() + "\n").forEach(System.out::println);
+                          "Registered School's Name\t:" + newSchool.getSchoolName(),
+                          "Registered School's ID\t\t:" + newSchool.getSchoolID(),
+                          "Registered School's Address\t:" + newSchool.getAddress(),
+                          "Registered School's City\t:" + newSchool.getCity() + "\n").forEach(System.out::println);
                     return newSchool;
                 }
             } catch(Exception e){
@@ -53,7 +56,7 @@ public class SchoolHELPSystem {
                 phone = (System.console().readLine());
                 System.out.print("Enter the new school administrator's staff ID: ");
                 staffID = Integer.parseInt((System.console().readLine()));
-                System.out.print("Enter the new school administrator's phone position: ");
+                System.out.print("Enter the new school administrator's position: ");
                 position = (System.console().readLine());
                 
                 if(SchoolHELP.getSchoolAdminList().stream().anyMatch(e -> e.getUsername().equals(username) && e.getEmail().equals(email) && e.getStaffID() == staffID)){
@@ -63,9 +66,68 @@ public class SchoolHELPSystem {
                     System.out.println("\nSuccessfully registered a new school administrator.");
                     Stream.of("\nNew School Administrator's credentials: ",
                           "Username: " + schoolAdmin.getUsername(),
-                          "Password: " + schoolAdmin.getPassword()).forEach(System.out::println);
+                          "Password: " + schoolAdmin.getPassword() + "\n").forEach(System.out::println);
                     return schoolAdmin;
                 }
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
+    public static SchoolAdmin schoolAdminChangePassword(SchoolAdmin schoolAdmin){
+        while(true){
+            try {
+                String oldPassword, newPassword, confirmNewPassword;
+
+                System.out.print("Enter the current password: ");
+                oldPassword = (System.console().readLine());
+                if(schoolAdmin.getPassword().equals(oldPassword)){
+                    while(schoolAdmin.getPassword().equals(oldPassword)){
+                        System.out.print("Enter the new password: ");
+                        newPassword = (System.console().readLine());
+                        System.out.print("Confirm the new password: ");
+                        confirmNewPassword = (System.console().readLine());
+                        
+                        if(newPassword.equals(confirmNewPassword)){
+                            System.out.println("\nSuccessfully changed the password.");
+                            schoolAdmin.setPassword(newPassword);
+                            return schoolAdmin;
+                        } else {
+                            System.out.println("ALERT: New Password and Confirmed New Password do not match. Try again.\n");
+                        }
+                    }
+                } else { 
+                    System.out.println("ALERT: Incorrect current password. Please try again.\n");
+                }
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
+    public static SchoolAdmin schoolAdminUpdateProfile(SchoolAdmin schoolAdmin){
+        while(true){
+            try {
+                String ufullName, uemail, uphone, uposition;
+                int ustaffID;
+
+                System.out.print("Enter to update the administrator's full name: ");
+                ufullName = (System.console().readLine());
+                System.out.print("Enter to update the administrator's email: ");
+                uemail = (System.console().readLine());
+                System.out.print("Enter to update the administrator's phone number: ");
+                uphone = (System.console().readLine());
+                System.out.print("Enter to update the administrator's staff ID: ");
+                ustaffID = Integer.parseInt((System.console().readLine()));
+                System.out.print("Enter to update the administrator's position: ");
+                uposition = (System.console().readLine());
+
+                System.out.println("Successfully updated the administrator's profile.\n");
+                schoolAdmin.setfullName(ufullName);
+                schoolAdmin.setEmail(uemail);
+                schoolAdmin.setPhone(uphone);
+                schoolAdmin.setStaffID(ustaffID);
+                schoolAdmin.setPosition(uposition);
+                return schoolAdmin;
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -86,20 +148,35 @@ public class SchoolHELPSystem {
                         String adminUsername = "admin", adminPassword = "admin123", adminInputUsername, adminInputPassword;
                         System.out.println("Logging in as SchoolHELP Admin.\n");
 
-                        System.out.print("School Administrator's username: ");
+                        System.out.print("SchoolHELP Admin's username: ");
                         adminInputUsername = (System.console().readLine());
-                        System.out.print("School Administrator's password: ");
+                        System.out.print("SchoolHELP Admin's password: ");
                         adminInputPassword = (System.console().readLine());
 
                         if(adminInputUsername.equals(adminUsername) && adminInputPassword.equals(adminPassword)){
-                            System.out.println("\n\nWelcome onboard! School Administrator.");
-                            SchoolAdminMenu();
+                            System.out.println("\n\nWelcome onboard! SchoolHELP Admin.");
+                            SchoolHELPAdminMenu();
                         } else {
                             System.out.println("\n\nALERT: Invalid username or password.");
                         }
                         break;
                     case 2:
+                        // Prepare the credentials
+                        String schoolAdminUsername, schoolAdminPassword;
                         System.out.println("Logging in as SchoolHELP Administrator.\n");
+
+                        System.out.print("School Administrator's username: ");
+                        schoolAdminUsername = (System.console().readLine());
+                        System.out.print("School Administrator's password: ");
+                        schoolAdminPassword = (System.console().readLine());
+
+                        if(SchoolHELP.isUserSchoolAdmin(schoolAdminUsername, schoolAdminPassword)){
+                            loggedUser = SchoolHELP.getUser(schoolAdminUsername, schoolAdminPassword);
+                            System.out.println("\n\nWelcome onboard. School Administrator.");
+                            SchoolAdministratorMenu();
+                        } else {
+                            System.out.println("\n\nALERT: Invalid username or password.");
+                        }
                         break;
                     case 0:
                         Stream.of("SYSTEM: Exiting program.", 
@@ -116,11 +193,11 @@ public class SchoolHELPSystem {
             }
         }
     }
-    public static void SchoolAdminMenu(){
+    public static void SchoolHELPAdminMenu(){
         int schoolAdminOpt = -1;
 
         while(true){
-            generateSchoolAdminMenu();
+            generateSchoolHELPAdminMenu();
             try {
                 System.out.print("Option: ");
                 schoolAdminOpt = Integer.parseInt(System.console().readLine());
@@ -129,7 +206,9 @@ public class SchoolHELPSystem {
                     case 1:
                         try {
                             School newSchool = registerSchool();
-                            SchoolHELP.addSchool(newSchool);
+                            if(!(SchoolHELP.isSchoolRegistered(newSchool.getSchoolName()))){
+                                SchoolHELP.addSchool(newSchool);
+                            } 
                             SchoolAdmin newSchoolAdmin = registerSchoolAdmin(newSchool);
                             SchoolHELP.addUser(newSchoolAdmin);
                         } catch(Exception e){
@@ -137,11 +216,47 @@ public class SchoolHELPSystem {
                         }
                         break;
                     case 0:
-                        System.out.println("Logging out as School Administrator.\n\n");
+                        System.out.println("Logging out as SchoolHELP Admin.\n\n");
                         main(null);
                         break;
                     default:
                         System.out.println("ALERT: Invalid input. Please try again.\n\n");
+                        break;
+                }
+            } catch(Exception e){
+                System.out.println("\n\nALERT: " + e.getMessage());
+            }
+        }
+    }
+    public static void SchoolAdministratorMenu(){
+        int schoolAdministratorOpt = -1;
+        SchoolAdmin loggedSchoolAdmin = ((SchoolAdmin) loggedUser);
+
+        while(true){
+            Stream.of("\nLogin as: " + loggedSchoolAdmin.getfullName() + ".",
+                      "Position: " + loggedSchoolAdmin.getPosition() + ".",
+                      "School ID\t:" + loggedSchoolAdmin.getSchool().getSchoolID() + ".",
+                      "School Name\t:" + loggedSchoolAdmin.getSchool().getSchoolName() + ".\n").forEach(System.out::println);
+            generateSchoolAdministratorMenu();
+            try {
+                System.out.print("Option: ");
+                schoolAdministratorOpt = Integer.parseInt(System.console().readLine());
+
+                switch(schoolAdministratorOpt){
+                    case 1:
+                        System.out.println("Setting up a new password.\n");
+                        SchoolAdmin schoolAdmin = schoolAdminChangePassword(loggedSchoolAdmin);
+                        break;
+                    case 2:
+                        System.out.println("Updating school administrator's profile.\n");
+                        SchoolAdmin schooladmin = schoolAdminUpdateProfile(loggedSchoolAdmin);
+                        break;
+                    case 0:
+                        System.out.println("Logging out as School Administrator.\n\n");
+                        main(null);
+                        break;
+                    default:
+                        System.out.println("ALERT: Invalid input. Please try again.\n");
                         break;
                 }
             } catch(Exception e){
@@ -157,11 +272,17 @@ public class SchoolHELPSystem {
                   "[2] Login as School Administrator\n",
                   "[0] Exit Program").forEach(System.out::println);
     }
-    public static void generateSchoolAdminMenu(){
+    public static void generateSchoolHELPAdminMenu(){
+        Stream.of("SchoolHELP Admin's Home Page",
+                  "----------------------------",
+                  "[1] Register School and Administrator\n",
+                  "[0] Log Out").forEach(System.out::println);
+    }
+    public static void generateSchoolAdministratorMenu(){
         Stream.of("School Administrator's Home Page",
-                  "------------------------------------",
-                  "[1] Register School",
-                  "[2] Register School Administrator\n",
+                  "--------------------------------",
+                  "[1] Change Password",
+                  "[2] Update Profile\n",
                   "[0] Log Out").forEach(System.out::println);
     }
 }
