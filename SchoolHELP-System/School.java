@@ -5,6 +5,8 @@ public class School {
     private String schoolName;
     private String address;
     private String city;
+
+    private ArrayList<Request> requestList = new ArrayList<>();
     
     public School(String schoolName, String address, String city){
         setSchoolID(validateSchoolID(schoolID));
@@ -29,6 +31,10 @@ public class School {
         this.city = city;
     }
 
+    public void setRequestList(ArrayList<Request> requestList){
+        this.requestList = requestList;
+    }
+
     public String getSchoolName(){
         return schoolName;
     }
@@ -43,6 +49,10 @@ public class School {
 
     public String getCity(){
         return city;
+    }
+
+    public ArrayList<Request> getRequestList(){
+        return requestList;
     }
 
     public int validateSchoolID(int validID){
