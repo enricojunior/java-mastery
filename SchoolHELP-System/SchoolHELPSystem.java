@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class SchoolHELPSystem {
     private static SchoolHELP SchoolHELP = new SchoolHELP(); 
     private static User loggedUser = null;
+    private static School selectedSchool = null;
 
     public static School registerSchool(){
         while(true){
@@ -41,6 +42,10 @@ public class SchoolHELPSystem {
     private static SchoolAdmin registerSchoolAdmin(School school){
         while(true){
             try {
+                if(school.getSchoolAdminList().isEmpty()){
+                    System.out.println("Registering new administrator for school " + school.getSchoolName() + ".");
+                }
+
                 String username, password, fullname, email, phone, position;
                 int staffID;
 
@@ -74,7 +79,7 @@ public class SchoolHELPSystem {
             }
         }
     }
-    private static SchoolAdmin schoolAdminChangePassword(SchoolAdmin schoolAdmin){
+    private static void schoolAdminChangePassword(SchoolAdmin schoolAdmin){
         while(true){
             try {
                 String oldPassword, newPassword, confirmNewPassword;
@@ -91,7 +96,7 @@ public class SchoolHELPSystem {
                         if(newPassword.equals(confirmNewPassword)){
                             System.out.println("\nSuccessfully changed the password.");
                             schoolAdmin.setPassword(newPassword);
-                            return schoolAdmin;
+                            SchoolAdministratorMenu();
                         } else {
                             System.out.println("ALERT: New Password and Confirmed New Password do not match. Try again.\n");
                         }
@@ -104,7 +109,7 @@ public class SchoolHELPSystem {
             }
         }
     }
-    private static SchoolAdmin schoolAdminUpdateProfile(SchoolAdmin schoolAdmin){
+    private static void schoolAdminUpdateProfile(SchoolAdmin schoolAdmin){
         while(true){
             try {
                 String ufullName, uemail, uphone, uposition;
@@ -127,7 +132,8 @@ public class SchoolHELPSystem {
                 schoolAdmin.setPhone(uphone);
                 schoolAdmin.setStaffID(ustaffID);
                 schoolAdmin.setPosition(uposition);
-                return schoolAdmin;
+
+                SchoolAdministratorMenu();
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -207,14 +213,27 @@ public class SchoolHELPSystem {
                 fullName = (System.console().readLine());
                 System.out.print("Enter the new volunteer's email: ");
                 email = (System.console().readLine());
+                System.out.print("Enter the new volunteer's phone number: ");
+                phone = (System.console().readLine());
                 System.out.print("Enter the new volunteer's occupation: ");
                 occupation = (System.console().readLine());
                 System.out.print("Enter the new volunteer's date of birth (dd-mm-yyyy): ");
                 dateOfBirth = (System.console().readLine());
 
                 if(!SchoolHELP.isValidDate(dateOfBirth)){
-                    System.out.println("\nALERT: Date of birth did not meet the format criteria.");
-                } 
+                    System.out.println("\nALERT: Date of birth did not meet the format criteria.\n");
+                    main(null);
+                } else if(SchoolHELP.getVolunteerList().stream().anyMatch(e -> e.getUsername().equals(username) && e.getEmail().equals(email))){
+                    System.out.println("\nSorry. The volunteer's data has already been taken.\n");
+                    main(null);
+                } else {
+                    Volunteer volunteer = new Volunteer(username, password, fullName, email, phone, dateOfBirth, occupation);
+                    System.out.println("\nSuccessfully registered as a new SchoolHELP's volunteer.");
+                    Stream.of("\nNew SchoolHELP Volunteer's credentials: ",
+                              "Username: " + volunteer.getUsername(),
+                              "Password: " + volunteer.getPassword() + "\n").forEach(System.out::println);
+                    return volunteer;
+                }
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -267,6 +286,10 @@ public class SchoolHELPSystem {
                         break;
                     case 3:
                         System.out.println("Registering as SchoolHELP Volunteer.\n");
+                        Volunteer newVolunteer = registerVolunteer();
+                        SchoolHELP.addUser(newVolunteer);
+                        break;
+                    case 4:
                         break;
                     case 0:
                         Stream.of("SYSTEM: Exiting program.", 
@@ -301,6 +324,7 @@ public class SchoolHELPSystem {
                             } 
                             SchoolAdmin newSchoolAdmin = registerSchoolAdmin(newSchool);
                             SchoolHELP.addUser(newSchoolAdmin);
+                            newSchool.addSchoolAdmin(newSchoolAdmin);
                         } catch(Exception e){
                             System.out.println("\nALERT: " + e.getMessage());
                         }
@@ -332,11 +356,11 @@ public class SchoolHELPSystem {
                 switch(schoolAdministratorOpt){
                     case 1:
                         System.out.println("Setting up a new password.\n");
-                        SchoolAdmin schoolAdmin = schoolAdminChangePassword(loggedSchoolAdmin);
+                        schoolAdminChangePassword(loggedSchoolAdmin);
                         break;
                     case 2:
                         System.out.println("Updating school administrator's profile.\n");
-                        SchoolAdmin schooladmin = schoolAdminUpdateProfile(loggedSchoolAdmin);
+                        schoolAdminUpdateProfile(loggedSchoolAdmin);
                         break;
                     case 3:
                         int submitChoice = -1;
@@ -347,11 +371,11 @@ public class SchoolHELPSystem {
 
                         switch(submitChoice){
                             case 1:
-                                TutorialRequest tutorialRequest = submitTutorialRequest(thisSchool);
+                                TutorialRequest tutorialRequest = submitTutorialRequest(loggedSchoolAdmin.getSchool());
                                 thisSchool.addRequest(tutorialRequest);
                                 break;
                             case 2:
-                                ResourceRequest resourceRequest = submitResourceRequest(thisSchool);
+                                ResourceRequest resourceRequest = submitResourceRequest(loggedSchoolAdmin.getSchool());
                                 thisSchool.addRequest(resourceRequest);
                                 break;
                             default:

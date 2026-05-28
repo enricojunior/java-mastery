@@ -19,7 +19,7 @@ public class SchoolAdmin extends User {
     }
 
     public void setSchool(School thisSchool){
-        this.thisSchool = this.thisSchool;
+        this.thisSchool = thisSchool;
     }
 
     public int getStaffID(){
