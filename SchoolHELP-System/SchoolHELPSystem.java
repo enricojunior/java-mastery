@@ -318,11 +318,11 @@ public class SchoolHELPSystem {
 
                         switch(submitChoice){
                             case 1:
-                                TutorialRequest tutorialRequest = submitTutorialRequest(loggedSchoolAdmin.getSchool());
+                                TutorialRequest tutorialRequest = submitTutorialRequest(thisSchool);
                                 thisSchool.addRequest(tutorialRequest);
                                 break;
                             case 2:
-                                ResourceRequest resourceRequest = submitResourceRequest(loggedSchoolAdmin.getSchool());
+                                ResourceRequest resourceRequest = submitResourceRequest(thisSchool);
                                 thisSchool.addRequest(resourceRequest);
                                 break;
                             default:
