@@ -77,6 +77,8 @@ abstract public class Request {
     public String getRequestCategory(){
         if(this instanceof TutorialRequest){
             return "Tutorial Request";
+        } else if(this instanceof ResourceRequest){
+            return "Resource Request";
         } else {
             return "Invalid Request";
         }

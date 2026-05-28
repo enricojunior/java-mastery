@@ -27,10 +27,10 @@ public class SchoolHELPSystem {
                     School newSchool = new School(schoolName, schoolAddress, schoolCity);
                     System.out.println("\nSuccessfully registered a new school.");
                     Stream.of("\nDetails of the registered school: ",
-                          "Registered School's Name\t:" + newSchool.getSchoolName(),
-                          "Registered School's ID\t\t:" + newSchool.getSchoolID(),
-                          "Registered School's Address\t:" + newSchool.getAddress(),
-                          "Registered School's City\t:" + newSchool.getCity() + "\n").forEach(System.out::println);
+                          "Registered School's Name\t: " + newSchool.getSchoolName(),
+                          "Registered School's ID\t\t: " + newSchool.getSchoolID(),
+                          "Registered School's Address\t: " + newSchool.getAddress(),
+                          "Registered School's City\t: " + newSchool.getCity() + "\n").forEach(System.out::println);
                     return newSchool;
                 }
             } catch(Exception e){
@@ -151,10 +151,15 @@ public class SchoolHELPSystem {
                 System.out.print("Enter the tutorial request's number of students: ");
                 numStudents = Integer.parseInt(System.console().readLine());
 
-                LocalDate tutorialRequestDate = LocalDate.now();
-                System.out.println("Successfully added new tutorial request.\n");
-                TutorialRequest tutorialRequest = new TutorialRequest(tutorialRequestDate, description, school, proposedDate, proposedTime, studentLevel, numStudents);
-                return tutorialRequest;
+                if(SchoolHELP.isValidDate(proposedDate) && SchoolHELP.isValidTime(proposedTime)){
+                    LocalDate tutorialRequestDate = LocalDate.now();
+                    System.out.println("Successfully added new tutorial request.\n\n");
+                    TutorialRequest tutorialRequest = new TutorialRequest(tutorialRequestDate, description, school, proposedDate, proposedTime, studentLevel, numStudents);
+                    return tutorialRequest;
+                } else {
+                    System.out.println("\nALERT: Invalid date or time detected.\n");
+                    SchoolAdministratorMenu();
+                }
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -174,11 +179,16 @@ public class SchoolHELPSystem {
                 System.out.print("Enter the number required for the specified resource request: ");
                 numRequired = Integer.parseInt(System.console().readLine());
 
-                LocalDate resourceRequestDate = LocalDate.now();
-                System.out.print("Successfully added new resource request.\n");
-                ResourceRequest resourceRequest = new ResourceRequest(resourceRequestDate, description, school, resourceType, numRequired);
-                resourceRequest.setResourceType(checkResourceType(resourceType));
-                return resourceRequest;
+                if(resourceType.equalsIgnoreCase("m") || resourceType.equalsIgnoreCase("p") || resourceType.equalsIgnoreCase("n")){
+                    LocalDate resourceRequestDate = LocalDate.now();
+                    System.out.print("Successfully added new resource request.\n\n");
+                    ResourceRequest resourceRequest = new ResourceRequest(resourceRequestDate, description, school, resourceType, numRequired);
+                    resourceRequest.setResourceType(checkResourceType(resourceType));
+                    return resourceRequest;
+                } else {
+                    System.out.println("\nALERT: Invalid resource type detected.\n");
+                    SchoolAdministratorMenu();
+                }
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }

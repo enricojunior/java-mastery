@@ -107,4 +107,25 @@ public class SchoolHELP {
 
         return false;
     }
+
+    public boolean isValidTime(String strTime){
+        if(strTime == null || strTime.length() != 5){
+            return false;
+        }
+
+        if(strTime.charAt(2) != ':'){
+            return false;
+        }
+
+        int parseHour = Integer.parseInt(strTime.substring(0,2));
+        int parseMinute = Integer.parseInt(strTime.substring(3,5));
+
+        if(parseHour >= 0 && parseHour <= 23){
+            if(parseMinute >=0 && parseMinute <= 59){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
