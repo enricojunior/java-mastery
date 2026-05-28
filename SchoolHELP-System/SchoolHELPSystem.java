@@ -74,7 +74,7 @@ public class SchoolHELPSystem {
             }
         }
     }
-    public static SchoolAdmin schoolAdminChangePassword(SchoolAdmin schoolAdmin){
+    private static SchoolAdmin schoolAdminChangePassword(SchoolAdmin schoolAdmin){
         while(true){
             try {
                 String oldPassword, newPassword, confirmNewPassword;
@@ -104,7 +104,7 @@ public class SchoolHELPSystem {
             }
         }
     }
-    public static SchoolAdmin schoolAdminUpdateProfile(SchoolAdmin schoolAdmin){
+    private static SchoolAdmin schoolAdminUpdateProfile(SchoolAdmin schoolAdmin){
         while(true){
             try {
                 String ufullName, uemail, uphone, uposition;
@@ -128,6 +128,57 @@ public class SchoolHELPSystem {
                 schoolAdmin.setStaffID(ustaffID);
                 schoolAdmin.setPosition(uposition);
                 return schoolAdmin;
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
+    private static TutorialRequest submitTutorialRequest(School school){
+        while(true){
+            try {
+                System.out.print("\nSubmitting a Tutorial Request.\n");
+                String description, proposedDate, proposedTime;
+                int studentLevel, numStudents;
+
+                System.out.print("Enter the tutorial request's description: ");
+                description = (System.console().readLine());
+                System.out.print("Enter the tutorial request's proposed date (Format dd-mm-yyyy): ");
+                proposedDate = (System.console().readLine());
+                System.out.print("Enter the tutorial request's proposed time (Format hh:mm): ");
+                proposedTime = (System.console().readLine());
+                System.out.print("Enter the tutorial request's student level: ");
+                studentLevel = Integer.parseInt(System.console().readLine());
+                System.out.print("Enter the tutorial request's number of students: ");
+                numStudents = Integer.parseInt(System.console().readLine());
+
+                LocalDate tutorialRequestDate = LocalDate.now();
+                System.out.println("Successfully added new tutorial request.\n");
+                TutorialRequest tutorialRequest = new TutorialRequest(tutorialRequestDate, description, school, proposedDate, proposedTime, studentLevel, numStudents);
+                return tutorialRequest;
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
+    private static ResourceRequest submitResourceRequest(School school){
+        while(true){
+            try {
+                System.out.print("\nSubmitting a Resource Request.\n");
+                String description, resourceType;
+                int numRequired;
+
+                System.out.print("Enter the resource request's description: ");
+                description = (System.console().readLine());
+                System.out.print("Enter the resource's type ('M'obile device, 'P'ersonal computer, 'N'etworking equipment): ");
+                resourceType = (System.console().readLine());
+                System.out.print("Enter the number required for the specified resource request: ");
+                numRequired = Integer.parseInt(System.console().readLine());
+
+                LocalDate resourceRequestDate = LocalDate.now();
+                System.out.print("Successfully added new resource request.\n");
+                ResourceRequest resourceRequest = new ResourceRequest(resourceRequestDate, description, school, resourceType, numRequired);
+                resourceRequest.setResourceType(checkResourceType(resourceType));
+                return resourceRequest;
             } catch(Exception e){
                 System.out.println("ALERT: " + e.getMessage());
             }
@@ -231,6 +282,7 @@ public class SchoolHELPSystem {
     public static void SchoolAdministratorMenu(){
         int schoolAdministratorOpt = -1;
         SchoolAdmin loggedSchoolAdmin = ((SchoolAdmin) loggedUser);
+        School thisSchool = loggedSchoolAdmin.getSchool();
 
         while(true){
             generateSchoolAdministratorMenu(loggedSchoolAdmin);
@@ -246,6 +298,28 @@ public class SchoolHELPSystem {
                     case 2:
                         System.out.println("Updating school administrator's profile.\n");
                         SchoolAdmin schooladmin = schoolAdminUpdateProfile(loggedSchoolAdmin);
+                        break;
+                    case 3:
+                        int submitChoice = -1;
+                        System.out.println("Submitting a request for assistance.\n");
+                        generateRequestMenu();
+                        System.out.print("\nSelect the request type: ");
+                        submitChoice = Integer.parseInt(System.console().readLine());
+
+                        switch(submitChoice){
+                            case 1:
+                                TutorialRequest tutorialRequest = submitTutorialRequest(loggedSchoolAdmin.getSchool());
+                                thisSchool.addRequest(tutorialRequest);
+                                break;
+                            case 2:
+                                ResourceRequest resourceRequest = submitResourceRequest(loggedSchoolAdmin.getSchool());
+                                thisSchool.addRequest(resourceRequest);
+                                break;
+                            default:
+                                System.out.println("ALERT: Invalid request selection.");
+                                SchoolAdministratorMenu();
+                                break;
+                        }                        
                         break;
                     case 0:
                         System.out.println("Logging out as School Administrator.\n\n");
@@ -282,7 +356,26 @@ public class SchoolHELPSystem {
                   "School Name\t: " + schoolAdmin.getSchool().getSchoolName() + ".",
                   "--------------------------------",
                   "[1] Change Password",
-                  "[2] Update Profile\n",
+                  "[2] Update Profile",
+                  "[3] Submit Request For Assistance\n",
                   "[0] Log Out").forEach(System.out::println);
+    }
+    public static void generateRequestMenu(){
+        Stream.of("Submit Request Category",
+                  "-----------------------",
+                  "[1] Tutorial Request",
+                  "[2] Resource Request",
+                  "-----------------------").forEach(System.out::println);
+    }
+    public static String checkResourceType(String resourceType){
+        if(resourceType.equalsIgnoreCase("m")){
+            return "Mobile Device"; 
+        } else if(resourceType.equalsIgnoreCase("p")){
+            return "Personal Computer";
+        } else if(resourceType.equalsIgnoreCase("n")){
+            return "Networking Equipment";
+        } else {
+            return "Invalid Resource";
+        }
     }
 }

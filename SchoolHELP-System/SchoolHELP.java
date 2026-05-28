@@ -75,4 +75,36 @@ public class SchoolHELP {
             return false;
         }
     }
+
+    public boolean isValidDate(String strDate){
+        int parseDay = Integer.parseInt(strDate.substring(0,2));
+        int parseMonth = Integer.parseInt(strDate.substring(3,5));
+        int parseYear = Integer.parseInt(strDate.substring(6,10));
+        boolean isLeapYear;
+
+        if((parseYear % 4 == 0 && parseYear % 100 != 0) || (parseYear % 400 == 0)){
+            isLeapYear = true;
+        } else {
+            isLeapYear = false;
+        }
+
+        if(parseMonth == 2){
+            if((isLeapYear && parseDay >= 1 && parseDay <= 29)){
+                return true;
+            } else if(!isLeapYear && parseDay >= 1 && parseDay <= 28){
+                return true;
+            } // no else-statement
+        } else if((parseMonth == 1 || parseMonth == 3 || parseMonth == 5 || parseMonth == 7 || 
+            parseMonth == 8 || parseMonth == 10 || parseMonth == 12)){
+            if(parseDay >= 1 && parseDay <= 31){
+                return true;
+            }
+        } else if((parseMonth == 4 || parseMonth == 6 || parseMonth == 9 || parseMonth == 11)){
+            if(parseDay >= 1 && parseDay <= 30){
+                return true;
+            }
+        } // no else-statement
+
+        return false;
+    }
 }

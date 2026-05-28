@@ -70,7 +70,7 @@ abstract public class Request {
         String details = "";
         details += "[ Request ID: " + getRequestID() + ", Request Date: " + getRequestDate()
                 + ", Status: " + getRequestStatus() + ", Date: " + requestDate.format(dtFormat)
-                + ", Description: " + getDescription() + ", ";
+                + ", Description: " + getDescription();
         return details;
     }
 

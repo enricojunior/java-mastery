@@ -55,6 +55,10 @@ public class School {
         return requestList;
     }
 
+    public void addRequest(Request newRequest){
+        getRequestList().add(newRequest);
+    }
+
     public int validateSchoolID(int validID){
         if((validID < 100000) || (validID > 999999)){
             validID = (int) (Math.random() * 900000) + 100000;
