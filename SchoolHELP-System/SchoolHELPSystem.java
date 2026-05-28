@@ -239,6 +239,8 @@ public class SchoolHELPSystem {
                             System.out.println("\n\nALERT: Invalid username or password.");
                         }
                         break;
+                    case 3:
+
                     case 0:
                         Stream.of("SYSTEM: Exiting program.", 
                                   "Thank you and have a nice day.").forEach(System.out::println);
@@ -349,7 +351,9 @@ public class SchoolHELPSystem {
                   "-----------------",
                   "Welcome to the SchoolHELP System\n",
                   "[1] Login as SchoolHELP Admin",
-                  "[2] Login as School Administrator\n",
+                  "[2] Login as School Administrator",
+                  "[3] Register as Volunteer",
+                  "[4] Login as Volunteer\n",
                   "[0] Exit Program").forEach(System.out::println);
     }
     public static void generateSchoolHELPAdminMenu(){

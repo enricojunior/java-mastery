@@ -8,19 +8,19 @@ abstract public class User implements Comparable<User> {
     private String phone;
 
     public User(){
-        this.username = "SchoolAdmin";
-        this.password = "admin123";
-        this.fullname = "Admin";
-        this.email = "schooladmin@gmail.com";
-        this.phone = "123";
+        setUsername("SchoolAdmin");
+        setPassword("admin123");
+        setfullName("Admin");
+        setEmail("schooladmin@gmail.com");
+        setPhone("123");
     }
 
     public User(String username, String password, String fullname, String email, String phone){
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.email = email;
-        this.phone = phone;
+        setUsername(username);
+        setPassword(password);
+        setfullName(fullname);
+        setEmail(email);
+        setPhone(phone);
     }
 
     public void setUsername(String username){

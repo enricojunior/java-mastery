@@ -5,9 +5,9 @@ public class SchoolAdmin extends User {
 
     public SchoolAdmin(String username, String password, String fullname, String email, String phone, int staffID, String position, School thisSchool){
         super(username, password, fullname, email, phone);
-        this.staffID = staffID;
-        this.position = position;
-        this.thisSchool = thisSchool;
+        setStaffID(staffID);
+        setPosition(position);
+        setSchool(thisSchool);
     }
 
     public void setStaffID(int staffID){
