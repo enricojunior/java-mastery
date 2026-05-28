@@ -194,6 +194,32 @@ public class SchoolHELPSystem {
             }
         }
     }
+    public static Volunteer registerVolunteer(){
+        while(true){
+            try {
+                String username, password, fullName, email, phone, occupation, dateOfBirth;
+                
+                System.out.print("Enter the new volunteer's username: ");
+                username = (System.console().readLine());
+                System.out.print("Enter the new volunteer's password: ");
+                password = (System.console().readLine());
+                System.out.print("Enter the new volunteer's full name: ");
+                fullName = (System.console().readLine());
+                System.out.print("Enter the new volunteer's email: ");
+                email = (System.console().readLine());
+                System.out.print("Enter the new volunteer's occupation: ");
+                occupation = (System.console().readLine());
+                System.out.print("Enter the new volunteer's date of birth (dd-mm-yyyy): ");
+                dateOfBirth = (System.console().readLine());
+
+                if(!SchoolHELP.isValidDate(dateOfBirth)){
+                    System.out.println("\nALERT: Date of birth did not meet the format criteria.");
+                } 
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
     public static void main(String args[]){
         int userOpt = -1;
 
@@ -240,7 +266,8 @@ public class SchoolHELPSystem {
                         }
                         break;
                     case 3:
-
+                        System.out.println("Registering as SchoolHELP Volunteer.\n");
+                        break;
                     case 0:
                         Stream.of("SYSTEM: Exiting program.", 
                                   "Thank you and have a nice day.").forEach(System.out::println);

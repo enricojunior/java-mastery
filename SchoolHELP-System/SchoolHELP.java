@@ -40,6 +40,12 @@ public class SchoolHELP {
         return schoolAdminList;        
     }
 
+    public ArrayList<Volunteer> getVolunteerList(){
+        ArrayList<Volunteer> volunteerList = new ArrayList<>();
+        getUserList().stream().filter(e -> e.isVolunteer()).map(e -> (Volunteer) e).forEach(volunteerList::add);
+        return volunteerList;
+    }
+
     public boolean isSchoolRegistered(String schoolName){
         School school = getSchoolList().stream().filter(e -> e.getSchoolName().equalsIgnoreCase(schoolName))
                                                 .findFirst().orElse(null);
@@ -71,6 +77,20 @@ public class SchoolHELP {
 
         if(user.isSchoolAdmin() == true){
             return true; 
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isUserVolunteer(String volunteerUsername, String volunteerPassword){
+        User user = getUserList().stream().filter(e -> e.getUsername().equals(volunteerUsername) && e.getPassword().equals(volunteerPassword)).findAny().orElse(null);
+
+        if(user == null){
+            return false;
+        }
+
+        if(user.isVolunteer() == true){
+            return true;
         } else {
             return false;
         }

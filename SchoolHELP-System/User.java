@@ -70,6 +70,13 @@ abstract public class User implements Comparable<User> {
         return false;
     }
 
+    public boolean isVolunteer(){
+        if(this instanceof Volunteer){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj){
