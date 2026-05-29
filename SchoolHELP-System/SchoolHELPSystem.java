@@ -418,7 +418,7 @@ public class SchoolHELPSystem {
         Volunteer loggedVolunteer = ((Volunteer) loggedUser);
 
         while(true){
-            generateSchoolVolunteerMenu();
+            generateSchoolVolunteerMenu(loggedVolunteer);
             try {
                 System.out.print("Option: ");
                 volunteerOpt = Integer.parseInt(System.console().readLine());
@@ -426,7 +426,7 @@ public class SchoolHELPSystem {
                 switch(volunteerOpt){
                     case 1:
                         try {
-                            System.out.println("To be continued");
+                            System.out.println("To be continued.");
                         } catch(Exception e){
                             System.out.println("\n\nALERT: " + e.getMessage());
                         }
