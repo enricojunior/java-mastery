@@ -290,6 +290,22 @@ public class SchoolHELPSystem {
                         SchoolHELP.addUser(newVolunteer);
                         break;
                     case 4:
+                        // Prepare the credentials
+                        String volunteerUsername, volunteerPassword;
+                        System.out.println("Logging in as SchoolHELP's Volunteer.\n");
+                        
+                        System.out.print("SchoolHELP's Volunteer's username: ");
+                        volunteerUsername = (System.console().readLine());
+                        System.out.print("SchoolHELP's Volunteer's password: ");
+                        volunteerPassword = (System.console().readLine());
+
+                        if(SchoolHELP.isUserVolunteer(volunteerUsername, volunteerPassword)){
+                            loggedUser = SchoolHELP.getUser(volunteerUsername, volunteerPassword);
+                            System.out.println("\n\nWelcome onboard. SchoolHELP's Volunteer.");
+                            VolunteerMenu();
+                        } else {
+                            System.out.println("\n\nALERT: Invalid username or password.");
+                        }
                         break;
                     case 0:
                         Stream.of("SYSTEM: Exiting program.", 
@@ -397,6 +413,37 @@ public class SchoolHELPSystem {
             }
         }
     }
+    public static void SchoolVolunteerMenu(){
+        int volunteerOpt = -1;
+        Volunteer loggedVolunteer = ((Volunteer) loggedUser);
+
+        while(true){
+            generateSchoolVolunteerMenu();
+            try {
+                System.out.print("Option: ");
+                volunteerOpt = Integer.parseInt(System.console().readLine());
+
+                switch(volunteerOpt){
+                    case 1:
+                        try {
+                            System.out.println("To be continued");
+                        } catch(Exception e){
+                            System.out.println("\n\nALERT: " + e.getMessage());
+                        }
+                        break;
+                    case 0:
+                        System.out.println("Logging out as School Volunteer.\n\n");
+                        main(null);
+                        break;
+                    default:
+                        System.out.println("ALERT: Invalid input. Please try again.\n");
+                        break;
+                }
+            } catch(Exception e){
+                System.out.println("\n\nALERT: " + e.getMessage());
+            }
+        }
+    }
     public static void generateOnboarding(){
         Stream.of("SchoolHELP System", 
                   "-----------------",
@@ -431,6 +478,14 @@ public class SchoolHELPSystem {
                   "[1] Tutorial Request",
                   "[2] Resource Request",
                   "-----------------------").forEach(System.out::println);
+    }
+    public static void generateSchoolVolunteerMenu(Volunteer volunteer){
+        Stream.of("SchoolHELP Volunteer's Home Page",
+                  "--------------------------------",
+                  "Login as: " + volunteer.getfullName(),
+                  "--------------------------------",
+                  "[1] View Requests\n",
+                  "[0] Log Out").forEach(System.out::println);
     }
     public static String checkResourceType(String resourceType){
         if(resourceType.equalsIgnoreCase("m")){
