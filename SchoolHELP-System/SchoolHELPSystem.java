@@ -302,7 +302,7 @@ public class SchoolHELPSystem {
                         if(SchoolHELP.isUserVolunteer(volunteerUsername, volunteerPassword)){
                             loggedUser = SchoolHELP.getUser(volunteerUsername, volunteerPassword);
                             System.out.println("\n\nWelcome onboard. SchoolHELP's Volunteer.");
-                            VolunteerMenu();
+                            SchoolVolunteerMenu();
                         } else {
                             System.out.println("\n\nALERT: Invalid username or password.");
                         }
@@ -389,10 +389,12 @@ public class SchoolHELPSystem {
                             case 1:
                                 TutorialRequest tutorialRequest = submitTutorialRequest(loggedSchoolAdmin.getSchool());
                                 thisSchool.addRequest(tutorialRequest);
+                                SchoolHELP.addRequest(tutorialRequest);
                                 break;
                             case 2:
                                 ResourceRequest resourceRequest = submitResourceRequest(loggedSchoolAdmin.getSchool());
                                 thisSchool.addRequest(resourceRequest);
+                                SchoolHELP.addRequest(resourceRequest);
                                 break;
                             default:
                                 System.out.println("ALERT: Invalid request selection.");
@@ -416,6 +418,7 @@ public class SchoolHELPSystem {
     public static void SchoolVolunteerMenu(){
         int volunteerOpt = -1;
         Volunteer loggedVolunteer = ((Volunteer) loggedUser);
+        ArrayList<Request> listOfRequests = SchoolHELP.getRequestList();
 
         while(true){
             generateSchoolVolunteerMenu(loggedVolunteer);
@@ -426,7 +429,47 @@ public class SchoolHELPSystem {
                 switch(volunteerOpt){
                     case 1:
                         try {
-                            System.out.println("To be continued.");
+                            if(listOfRequests.isEmpty()){
+                                System.out.println("Sorry. There are not any requests available.\n");
+                                SchoolVolunteerMenu();
+                            } else {
+                                int sortChoice = -1;
+                                System.out.println("Viewing submitted requests.\n");
+                                
+                                generateSortingViewMenu();
+                                System.out.print("Select the sort choice: ");
+                                sortChoice = Integer.parseInt(System.console().readLine());
+                                
+                                switch(sortChoice){
+                                    case 1:
+                                        System.out.println("Sorting requests by school.\n");
+                                        ArrayList<Request> sortBySchool = new ArrayList<>(listOfRequests);
+                                        sortBySchool.sort(Comparator.comparing(e -> e.getThisSchool().getSchoolName(),
+                                                         String.CASE_INSENSITIVE_ORDER));
+                                        generateSortedRequests(sortBySchool);
+                                        break;
+                                    case 2:
+                                        System.out.println("Sorting requests by city.\n");
+                                        ArrayList<Request> sortByCity = new ArrayList<>(listOfRequests);
+                                        sortByCity.sort(Comparator.comparing(e -> e.getThisSchool().getCity(),
+                                                        String.CASE_INSENSITIVE_ORDER));
+                                        generateSortedRequests(sortByCity);
+                                        break;
+                                    case 3:
+                                        System.out.println("Sorting requests by request date.\n");
+                                        ArrayList<Request> sortByDate = new ArrayList<>(listOfRequests);
+                                        sortByDate.sort(Comparator.comparing(Request::getRequestDate));
+                                        generateSortedRequests(sortByDate);
+                                        break;
+                                    default:
+                                        System.out.println("ALERT: Invalid input. Please try again.\n");
+                                        SchoolVolunteerMenu();
+                                        break;
+                                    System.out.println();
+
+                                    // To be continued.
+                                }
+                            }
                         } catch(Exception e){
                             System.out.println("\n\nALERT: " + e.getMessage());
                         }
@@ -487,6 +530,14 @@ public class SchoolHELPSystem {
                   "[1] View Requests\n",
                   "[0] Log Out").forEach(System.out::println);
     }
+    public static void generateSortingViewMenu(){
+        Stream.of("Sort Submitted Requests Category",
+                  "--------------------------------",
+                  "[1] Sort by school",
+                  "[2] Sort by city",
+                  "[3] Sort by request date",
+                  "--------------------------------").forEach(System.out::println);
+    }
     public static String checkResourceType(String resourceType){
         if(resourceType.equalsIgnoreCase("m")){
             return "Mobile Device"; 
@@ -496,6 +547,15 @@ public class SchoolHELPSystem {
             return "Networking Equipment";
         } else {
             return "Invalid Resource";
+        }
+    }
+    public static void generateSortedRequests(ArrayList<Request> requests){
+        System.out.println("Status\tRequest Date\tSchool Name\tSchool City\tDescription");
+
+        for(Request request : requests){
+            System.out.println(request.getRequestStatus() + "\t" + request.getRequestDate() + "\t" +
+                               request.getThisSchool().getSchoolName() + "\t" + request.getThisSchool().getCity() + "\t\t" +
+                               request.getDescription());
         }
     }
 }

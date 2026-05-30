@@ -4,10 +4,12 @@ import java.time.LocalDate;
 public class SchoolHELP {
     private ArrayList<School> schoolList;
     private ArrayList<User> userList;
+    private ArrayList<Request> requestList;
 
     public SchoolHELP(){
         schoolList = new ArrayList<>();
         userList = new ArrayList<>();
+        requestList = new ArrayList<>();
     }
 
     public void setSchoolList(ArrayList<School> schoolList){
@@ -18,6 +20,10 @@ public class SchoolHELP {
         this.userList = userList;
     }
 
+    public void setRequestList(ArrayList<Request> requestList){
+        this.requestList = requestList;
+    }
+
     public void addSchool(School newSchool){
         schoolList.add(newSchool);
     }
@@ -26,12 +32,20 @@ public class SchoolHELP {
         userList.add(newUser);
     }
 
+    public void addRequest(Request newRequest){
+        requestList.add(newRequest);
+    }
+
     public ArrayList<School> getSchoolList(){
         return schoolList;
     }
 
     public ArrayList<User> getUserList(){
         return userList;
+    }
+
+    public ArrayList<Request> getRequestList(){
+        return requestList;
     }
 
     public ArrayList<SchoolAdmin> getSchoolAdminList(){
