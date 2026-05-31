@@ -465,9 +465,31 @@ public class SchoolHELPSystem {
                                         System.out.println("ALERT: Invalid input. Please try again.\n");
                                         SchoolVolunteerMenu();
                                         break;
-                                    System.out.println();
+                                }
+                                System.out.println();
 
-                                    // To be continued.
+                                int selectionChoice;
+                                System.out.print("Select the Appeal by its ID to view more details: ");
+                                selectionChoice = Integer.parseInt(System.console().readLine());
+
+                                if(SchoolHELP.isRequestFoundByID(selectionChoice)){
+                                    Request selectedRequest = SchoolHELP.findRequestByID(selectionChoice);
+                                    if(selectedRequest.getRequestCategory().equals("Tutorial Request")){
+                                        TutorialRequest selectedTutorialRequest = ((TutorialRequest) selectedRequest);
+                                        Stream.of("Request Category: Tutorial Request",
+                                                  "Proposed date: " + selectedTutorialRequest.getProposedDate(),
+                                                  "Proposed time: " + selectedTutorialRequest.getProposedTime(),
+                                                  "Student level: " + selectedTutorialRequest.getStudentLevel(),
+                                                  "Number of students: " + selectedTutorialRequest.getNumStudents() + "\n").forEach(System.out::println);
+                                    } else {
+                                        ResourceRequest selectedResourceRequest = ((ResourceRequest) selectedRequest);
+                                        Stream.of("Request Category: Resource Request",
+                                                  "Resource type: " + selectedResourceRequest.getResourceType(),
+                                                  "Number required: " + selectedResourceRequest.getNumRequired() + "\n").forEach(System.out::println);
+                                    }
+                                } else {
+                                    System.out.println("\nSorry. Request is not found based on the inputted ID.");
+                                    SchoolVolunteerMenu();
                                 }
                             }
                         } catch(Exception e){
@@ -550,10 +572,11 @@ public class SchoolHELPSystem {
         }
     }
     public static void generateSortedRequests(ArrayList<Request> requests){
-        System.out.println("Status\tRequest Date\tSchool Name\tSchool City\tDescription");
+        System.out.println("Status\tRequest Date\tRequest ID\tSchool Name\tSchool City\tDescription");
 
         for(Request request : requests){
             System.out.println(request.getRequestStatus() + "\t" + request.getRequestDate() + "\t" +
+                               request.getRequestID() + "\t\t" +
                                request.getThisSchool().getSchoolName() + "\t" + request.getThisSchool().getCity() + "\t\t" +
                                request.getDescription());
         }
