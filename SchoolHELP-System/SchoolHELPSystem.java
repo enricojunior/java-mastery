@@ -418,7 +418,6 @@ public class SchoolHELPSystem {
     public static void SchoolVolunteerMenu(){
         int volunteerOpt = -1;
         Volunteer loggedVolunteer = ((Volunteer) loggedUser);
-        ArrayList<Request> listOfRequests = SchoolHELP.getRequestList();
 
         while(true){
             generateSchoolVolunteerMenu(loggedVolunteer);
@@ -429,7 +428,9 @@ public class SchoolHELPSystem {
                 switch(volunteerOpt){
                     case 1:
                         try {
-                            if(listOfRequests.isEmpty()){
+                            ArrayList<Request> listOfNewRequests = SchoolHELP.getRequestList().stream().filter(e -> e.getRequestStatus().equalsIgnoreCase("NEW"))
+                                                                                              .collect(Collectors.toCollection(ArrayList::new));
+                            if(listOfNewRequests.isEmpty()){
                                 System.out.println("Sorry. There are not any requests available.\n");
                                 SchoolVolunteerMenu();
                             } else {
@@ -440,57 +441,97 @@ public class SchoolHELPSystem {
                                 System.out.print("Select the sort choice: ");
                                 sortChoice = Integer.parseInt(System.console().readLine());
                                 
+                                ArrayList<Request> sortedRequests = new ArrayList<>(listOfNewRequests);
+                                boolean checkisValidSorting = true;
+
                                 switch(sortChoice){
                                     case 1:
                                         System.out.println("Sorting requests by school.\n");
-                                        ArrayList<Request> sortBySchool = new ArrayList<>(listOfRequests);
-                                        sortBySchool.sort(Comparator.comparing(e -> e.getThisSchool().getSchoolName(),
+                                        sortedRequests.sort(Comparator.comparing(e -> e.getThisSchool().getSchoolName(),
                                                          String.CASE_INSENSITIVE_ORDER));
-                                        generateSortedRequests(sortBySchool);
                                         break;
                                     case 2:
                                         System.out.println("Sorting requests by city.\n");
-                                        ArrayList<Request> sortByCity = new ArrayList<>(listOfRequests);
-                                        sortByCity.sort(Comparator.comparing(e -> e.getThisSchool().getCity(),
+                                        sortByRequests.sort(Comparator.comparing(e -> e.getThisSchool().getCity(),
                                                         String.CASE_INSENSITIVE_ORDER));
-                                        generateSortedRequests(sortByCity);
                                         break;
                                     case 3:
                                         System.out.println("Sorting requests by request date.\n");
-                                        ArrayList<Request> sortByDate = new ArrayList<>(listOfRequests);
-                                        sortByDate.sort(Comparator.comparing(Request::getRequestDate));
-                                        generateSortedRequests(sortByDate);
+                                        sortedRequests.sort(Comparator.comparing(Request::getRequestDate));
                                         break;
                                     default:
                                         System.out.println("ALERT: Invalid input. Please try again.\n");
+                                        checkisValidSorting = false;
                                         SchoolVolunteerMenu();
                                         break;
                                 }
                                 System.out.println();
 
-                                int selectionChoice;
-                                System.out.print("Select the Appeal by its ID to view more details: ");
-                                selectionChoice = Integer.parseInt(System.console().readLine());
+                                if(checkisValidSorting){
+                                    boolean viewRequestsLoop = true;
+                                    while(viewRequestsLoop){
+                                        ArrayList<Request> listOfActiveRequests = sortedRequests.stream().filter(e -> e.getRequestStatus().equalsIgnoreCase("NEW")) 
+                                                                                                         .collect(Collectors.toCollection(ArrayList::new));
+                                        if(listOfActiveRequests.isEmpty()){
+                                            System.out.println("\nSorry, there are not any new requests available.");
+                                            break;
+                                        }
+                                        generateSortedRequests(listOfActiveRequests);
+                                        System.out.println();
 
-                                if(SchoolHELP.isRequestFoundByID(selectionChoice)){
-                                    Request selectedRequest = SchoolHELP.findRequestByID(selectionChoice);
-                                    if(selectedRequest.getRequestCategory().equals("Tutorial Request")){
-                                        TutorialRequest selectedTutorialRequest = ((TutorialRequest) selectedRequest);
-                                        Stream.of("Request Category: Tutorial Request",
-                                                  "Proposed date: " + selectedTutorialRequest.getProposedDate(),
-                                                  "Proposed time: " + selectedTutorialRequest.getProposedTime(),
-                                                  "Student level: " + selectedTutorialRequest.getStudentLevel(),
-                                                  "Number of students: " + selectedTutorialRequest.getNumStudents() + "\n").forEach(System.out::println);
-                                    } else {
-                                        ResourceRequest selectedResourceRequest = ((ResourceRequest) selectedRequest);
-                                        Stream.of("Request Category: Resource Request",
-                                                  "Resource type: " + selectedResourceRequest.getResourceType(),
-                                                  "Number required: " + selectedResourceRequest.getNumRequired() + "\n").forEach(System.out::println);
+                                        int selectionChoice;
+                                        System.out.print("Select the Appeal by its ID to view more details: ");
+                                        selectionChoice = Integer.parseInt(System.console().readLine());  
+
+                                        Request selectedRequest = listOfActiveRequests.stream().filter(e -> e.getRequestID() == selectionChoice)
+                                                                                      .findFirst().orElse(null);
+                                        if(selectedRequest != null){
+                                            if(selectedRequest.getRequestCategory().equals("Tutorial Request")){
+                                                TutorialRequest selectedTutorialRequest = ((TutorialRequest) selectedRequest);
+                                                Stream.of("Request Category: Tutorial Request",
+                                                        "Proposed date: " + selectedTutorialRequest.getProposedDate(),
+                                                        "Proposed time: " + selectedTutorialRequest.getProposedTime(),
+                                                        "Student level: " + selectedTutorialRequest.getStudentLevel(),
+                                                        "Number of students: " + selectedTutorialRequest.getNumStudents() + "\n").forEach(System.out::println);
+                                            } else {
+                                                ResourceRequest selectedResourceRequest = ((ResourceRequest) selectedRequest);
+                                                Stream.of("Request Category: Resource Request",
+                                                        "Resource type: " + selectedResourceRequest.getResourceType(),
+                                                        "Number required: " + selectedResourceRequest.getNumRequired() + "\n").forEach(System.out::println);
+                                            }
+
+                                            boolean continuousLoop = true;
+                                            while(continuousLoop){
+                                                generateContinuousOption();
+                                                System.out.print("Your option: ");
+                                                int continuousOpt = Integer.parseInt(System.console().readLine());
+                                                switch(continuousOpt){
+                                                    case 1:
+                                                        continuousLoop = false;
+                                                        System.out.println("Viewing another requests.\n");
+                                                        break;
+                                                    case 2:
+                                                        System.out.println("Submitting an offer.\n");
+                                                        continuousLoop = false;
+                                                        viewRequestsLoop = false;
+                                                        break;
+                                                    case 0:
+                                                        continuousLoop = false;
+                                                        viewRequestsLoop = false;
+                                                        SchoolVolunteerMenu();
+                                                        break;
+                                                    default:
+                                                        System.out.println("ALERT: Invalid option. Redirecting to the SchoolHELP's Volunteer Menu.\n");
+                                                        SchoolVolunteerMenu();
+                                                        break;
+                                                }
+                                            }
+                                        } else {
+                                            System.out.println("\nSorry. Request is not found based on the inputted ID.");
+                                            SchoolVolunteerMenu();
+                                        }
                                     }
-                                } else {
-                                    System.out.println("\nSorry. Request is not found based on the inputted ID.");
-                                    SchoolVolunteerMenu();
-                                }
+                                } 
                             }
                         } catch(Exception e){
                             System.out.println("\n\nALERT: " + e.getMessage());
@@ -580,5 +621,12 @@ public class SchoolHELPSystem {
                                request.getThisSchool().getSchoolName() + "\t" + request.getThisSchool().getCity() + "\t\t" +
                                request.getDescription());
         }
+    }
+    public static void generateContinuousOption(){
+        Stream.of("\nContinuous Option",
+                  "-------------------",
+                  "[1] View Another Requests",
+                  "[2] Submit Offer\n",
+                  "[0] Return back to the SchoolHELP's Volunteer Menu").forEach(System.out::println);
     }
 }

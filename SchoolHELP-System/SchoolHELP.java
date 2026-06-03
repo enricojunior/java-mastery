@@ -73,7 +73,7 @@ public class SchoolHELP {
         return getSchoolList().stream().filter(e -> e.getSchoolName().equalsIgnoreCase(schoolName)).findFirst().orElse(null);
     }
 
-    public boolean isRequestFoundByID(int id){
+    /* public boolean isRequestFoundByID(int id){
         Request request = getRequestList().stream().filter(e -> e.getRequestID() == id)
                                                    .findFirst().orElse(null);
         if(request != null){
@@ -84,7 +84,7 @@ public class SchoolHELP {
 
     public Request findRequestByID(int id){
         return getRequestList().stream().filter(e -> e.getRequestID() == id).findFirst().orElse(null);
-    }
+    } */
 
     public User getUser(String username, String password){
         for(User user : getUserList()){
