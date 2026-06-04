@@ -452,7 +452,7 @@ public class SchoolHELPSystem {
                                         break;
                                     case 2:
                                         System.out.println("Sorting requests by city.\n");
-                                        sortByRequests.sort(Comparator.comparing(e -> e.getThisSchool().getCity(),
+                                        sortedRequests.sort(Comparator.comparing(e -> e.getThisSchool().getCity(),
                                                         String.CASE_INSENSITIVE_ORDER));
                                         break;
                                     case 3:
