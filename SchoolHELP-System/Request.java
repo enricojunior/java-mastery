@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 abstract public class Request {
     private int requestID;
@@ -8,6 +9,7 @@ abstract public class Request {
     private String description;
 
     private School thisSchool;
+    private ArrayList<Offer> offerList = new ArrayList<>();
 
     public Request(LocalDate requestDate, String description, School thisSchool){
         setRequestID(validateRequestID(requestID));
@@ -37,6 +39,10 @@ abstract public class Request {
         this.thisSchool = thisSchool;
     }
 
+    public void setOfferList(ArrayList<Offer> offerList){
+        this.offerList = offerList;
+    }
+
     public int getRequestID(){
         return requestID;
     }
@@ -55,6 +61,10 @@ abstract public class Request {
 
     public School getThisSchool(){
         return thisSchool;
+    }
+
+    public ArrayList<Offer> getOfferList(){
+        return offerList;
     }
 
     public int validateRequestID(int validID){
@@ -82,5 +92,9 @@ abstract public class Request {
         } else {
             return "Invalid Request";
         }
+    }
+
+    public void addOffer(Offer newOffer){
+        getOfferList().add(newOffer);
     }
 }

@@ -7,11 +7,13 @@ public class Offer {
     private String offerStatus;
 
     private Volunteer thisVolunteer;
+    private Request thisRequest;
 
-    public Offer(LocalDate offerDate, String remarks, Volunteer thisVolunteer){
+    public Offer(LocalDate offerDate, String remarks, Volunteer thisVolunteer, Request thisRequest){
         setOfferDate(offerDate);
         setRemarks(remarks);
         setThisVolunteer(thisVolunteer);
+        setThisRequest(thisRequest);
         setOfferStatus("PENDING");
     }
 
@@ -31,6 +33,10 @@ public class Offer {
         this.thisVolunteer = thisVolunteer;
     }
 
+    public void setThisRequest(Request thisRequest){
+        this.thisRequest = thisRequest;
+    }
+
     public LocalDate getOfferDate(){
         return offerDate;
     }
@@ -45,5 +51,9 @@ public class Offer {
 
     public Volunteer getThisVolunteer(){
         return thisVolunteer;
+    }
+
+    public Request getThisRequest(){
+        return thisRequest;
     }
 }

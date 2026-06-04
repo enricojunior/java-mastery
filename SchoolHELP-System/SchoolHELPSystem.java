@@ -239,6 +239,24 @@ public class SchoolHELPSystem {
             }
         }
     }
+    private static Offer submitOffer(Volunteer volunteer, Request request){
+        while(true){
+            try {
+                String remarks;
+
+                System.out.print("Enter the remarks for the offer: ");
+                remarks = (System.console().readLine());
+
+                System.out.println("\nSuccessfully submitted an offer for the designated request.");
+                LocalDate offerDate = LocalDate.now();
+                
+                Offer newOffer = new Offer(offerDate, remarks, volunteer, request);
+                return newOffer;
+            } catch(Exception e){
+                System.out.println("ALERT: " + e.getMessage());
+            }
+        }
+    }
     public static void main(String args[]){
         int userOpt = -1;
 
@@ -514,6 +532,15 @@ public class SchoolHELPSystem {
                                                         System.out.println("Submitting an offer.\n");
                                                         continuousLoop = false;
                                                         viewRequestsLoop = false;
+                                                        Offer newOffer = submitOffer(loggedVolunteer, selectedRequest);
+                                                        loggedVolunteer.addOffer(newOffer);
+                                                        selectedRequest.addOffer(newOffer);
+
+                                                        // Test it to ensure it works
+                                                        for(Offer o : selectedRequest.getOfferList()){
+                                                            System.out.println(o.getRemarks());
+                                                        }
+                                                        
                                                         break;
                                                     case 0:
                                                         continuousLoop = false;
@@ -613,12 +640,12 @@ public class SchoolHELPSystem {
         }
     }
     public static void generateSortedRequests(ArrayList<Request> requests){
-        System.out.println("Status\tRequest Date\tRequest ID\tSchool Name\tSchool City\tDescription");
+        System.out.println("Status\tRequest Date\tRequest ID\tSchool Name\t\tSchool City\tDescription");
 
         for(Request request : requests){
             System.out.println(request.getRequestStatus() + "\t" + request.getRequestDate() + "\t" +
                                request.getRequestID() + "\t\t" +
-                               request.getThisSchool().getSchoolName() + "\t" + request.getThisSchool().getCity() + "\t\t" +
+                               request.getThisSchool().getSchoolName() + "\t\t" + request.getThisSchool().getCity() + "\t\t" +
                                request.getDescription());
         }
     }

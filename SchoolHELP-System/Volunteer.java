@@ -35,4 +35,8 @@ public class Volunteer extends User {
     public ArrayList<Offer> getOfferList(){
         return offerList;
     }
+
+    public void addOffer(Offer newOffer){
+        getOfferList().add(newOffer);
+    }
 }
