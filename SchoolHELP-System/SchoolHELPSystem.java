@@ -420,6 +420,42 @@ public class SchoolHELPSystem {
                                 break;
                         }                        
                         break;
+                    case 4:
+                        System.out.println("Viewing requests.\n");
+                        try {
+                            ArrayList<Request> viewAllRequests = SchoolHELP.viewRequestListFromThisSchool(thisSchool);
+                            ArrayList<Request> sortedAllRequests = new ArrayList<>(viewAllRequests);
+                            sortedAllRequests.sort(Comparator.comparing(Request::getRequestStatus)
+                                                             .thenComparing(Request::getRequestDate));
+                            
+                            if(sortedAllRequests.isEmpty()){
+                                System.out.println("Sorry. There are not any requests available.\n");
+                                SchoolAdministratorMenu();
+                            } else {
+                                generateViewRequestsFromThisSchool(sortedAllRequests);
+                                System.out.println("\n");
+
+                                int selection;
+                                System.out.print("Select the request by its ID to view more details: ");
+                                selection = Integer.parseInt(System.console().readLine());
+
+                                Request choosedRequest = sortedAllRequests.stream().filter(e -> e.getRequestID() == selection)
+                                                                          .findFirst().orElse(null);
+                                if(choosedRequest != null){
+                                    if(choosedRequest.getOfferList().isEmpty()){
+                                        System.out.println("\nSorry. There aren't any offers available for this request.");
+                                    } else {
+                                        generateOfferList(choosedRequest);
+                                    }
+                                } else {
+                                    System.out.println("\nSorry. Request is not found based on the inputted ID.");
+                                    SchoolAdministratorMenu();
+                                }
+                            }
+                        } catch(Exception e){
+                            System.out.println("\n\nALERT: " + e.getMessage());
+                        }                    
+                        break;
                     case 0:
                         System.out.println("Logging out as School Administrator.\n\n");
                         main(null);
@@ -498,7 +534,7 @@ public class SchoolHELPSystem {
                                         System.out.println();
 
                                         int selectionChoice;
-                                        System.out.print("Select the Appeal by its ID to view more details: ");
+                                        System.out.print("Select the active request by its ID to view more details: ");
                                         selectionChoice = Integer.parseInt(System.console().readLine());  
 
                                         Request selectedRequest = listOfActiveRequests.stream().filter(e -> e.getRequestID() == selectionChoice)
@@ -602,7 +638,8 @@ public class SchoolHELPSystem {
                   "--------------------------------",
                   "[1] Change Password",
                   "[2] Update Profile",
-                  "[3] Submit Request For Assistance\n",
+                  "[3] Submit Request For Assistance",
+                  "[4] View Requests\n",
                   "[0] Log Out").forEach(System.out::println);
     }
     public static void generateRequestMenu(){
@@ -648,6 +685,26 @@ public class SchoolHELPSystem {
                                request.getThisSchool().getSchoolName() + "\t\t" + request.getThisSchool().getCity() + "\t\t" +
                                request.getDescription());
         }
+    }
+    public static void generateViewRequestsFromThisSchool(ArrayList<Request> requests){
+        System.out.println("Status\tRequest Date\tRequest ID\tSchool Name\t\tSchool City");
+
+        for(Request request : requests){
+            System.out.println(request.getRequestStatus() + "\t" + request.getRequestDate() + "\t" +
+                               request.getRequestID() + "\t\t" +
+                               request.getThisSchool().getSchoolName() + "\t\t" + request.getThisSchool().getCity());
+        }
+    }
+    public static void generateOfferList(Request request){
+        System.out.println("Request's description: " + request.getDescription());
+        System.out.println("\nOffer Date\tOffer Status\tRemarks");
+
+        for(Offer offer : request.getOfferList()){
+            System.out.println(offer.getOfferDate() + "\t" + 
+                               offer.getOfferStatus() + "\t\t" + 
+                               offer.getRemarks());
+        }
+        System.out.println();
     }
     public static void generateContinuousOption(){
         Stream.of("\nContinuous Option",
