@@ -1,6 +1,9 @@
 import java.util.*;
 import java.util.stream.*;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class SchoolHELPSystem {
     private static SchoolHELP SchoolHELP = new SchoolHELP(); 
@@ -442,10 +445,52 @@ public class SchoolHELPSystem {
                                 Request choosedRequest = sortedAllRequests.stream().filter(e -> e.getRequestID() == selection)
                                                                           .findFirst().orElse(null);
                                 if(choosedRequest != null){
-                                    if(choosedRequest.getOfferList().isEmpty()){
-                                        System.out.println("\nSorry. There aren't any offers available for this request.");
+                                    if(choosedRequest.getOfferList().isEmpty()) {
+                                        System.out.println("\nSorry. There aren't any offers available for this request.\n");
+                                    } else if(choosedRequest.getRequestStatus().equals("CLOSED")) {
+                                        System.out.println("\nSorry. This request has been closed.\n");
                                     } else {
-                                        generateOfferList(choosedRequest);
+                                        generateOfferSelection(choosedRequest);
+                                        
+                                        int secondSelection;
+                                        System.out.print("Select the offer for the request by its ID: ");
+                                        secondSelection = Integer.parseInt(System.console().readLine());
+                                        
+                                        Offer selectedOffer = (choosedRequest.getOfferList()).stream().filter(e -> e.getOfferID() == secondSelection)
+                                                                                             .findFirst().orElse(null);
+                                        if(selectedOffer != null){
+                                            generateOfferDetails(selectedOffer);
+
+                                            System.out.print("Would you like to accept the offer (y/n): ");
+                                            String choice = (System.console().readLine());
+                                            
+                                            if(choice.equalsIgnoreCase("y")){
+                                                System.out.println("Offer's status is updated to ACCEPTED.");
+                                                selectedOffer.setOfferStatus("ACCEPTED");
+                                            } else if(choice.equalsIgnoreCase("n")){
+                                                System.out.println("Offer's status is updated to REJECTED.");
+                                                selectedOffer.setOfferStatus("REJECTED");
+                                            } else {
+                                                System.out.println("ALERT: Invalid choice selection.");
+                                                SchoolAdministratorMenu();
+                                            }
+
+                                            System.out.print("Would you like to close this request (y/n): ");
+                                            String nextChoice = (System.console().readLine());
+                                            
+                                            if(choice.equalsIgnoreCase("y")){
+                                                System.out.println("Request's status is set to CLOSED.");
+                                                choosedRequest.setRequestStatus("CLOSED");
+                                            } else if(choice.equalsIgnoreCase("n")){
+                                                System.out.println("Request's status remains in default status.");
+                                            } else {
+                                                System.out.println("ALERT: Invalid choice selection.");
+                                                SchoolAdministratorMenu();
+                                            }
+                                        } else {
+                                            System.out.println("\nSorry. Offer is not found based on the inputted ID.");
+                                            SchoolAdministratorMenu();
+                                        }
                                     }
                                 } else {
                                     System.out.println("\nSorry. Request is not found based on the inputted ID.");
@@ -654,7 +699,8 @@ public class SchoolHELPSystem {
                   "--------------------------------",
                   "Login as: " + volunteer.getfullName(),
                   "--------------------------------",
-                  "[1] View Requests\n",
+                  "[1] View Requests",
+                  "[2] View Offer Status (Email)\n",
                   "[0] Log Out").forEach(System.out::println);
     }
     public static void generateSortingViewMenu(){
@@ -695,17 +741,33 @@ public class SchoolHELPSystem {
                                request.getThisSchool().getSchoolName() + "\t\t" + request.getThisSchool().getCity());
         }
     }
-    public static void generateOfferList(Request request){
+    public static void generateOfferSelection(Request request){
         System.out.println("Request's description: " + request.getDescription());
-        System.out.println("\nOffer Date\tOffer ID\tOffer Status\tRemarks");
+        System.out.println("\nOffer ID\tOffer Status");
 
         for(Offer offer : request.getOfferList()){
-            System.out.println(offer.getOfferDate() + "\t" + 
-                               offer.getOfferID() + "\t" +
-                               offer.getOfferStatus() + "\t\t" + 
-                               offer.getRemarks());
+            System.out.println(offer.getOfferID() + "\t\t" +
+                               offer.getOfferStatus());
         }
         System.out.println();
+    }
+    public static void generateOfferDetails(Offer offer){
+        try {
+            String fetchVolunteerAge = offer.getThisVolunteer().getDateOfBirth();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+            LocalDate extractBirthDate = LocalDate.parse(fetchVolunteerAge, formatter);
+            LocalDate getCurrentDate = LocalDate.now();
+            Period period = Period.between(extractBirthDate, getCurrentDate);
+
+            Stream.of("\nOffer Date: " + offer.getOfferDate(),
+                      "Offer Remarks: " + offer.getRemarks(),
+                      "Volunteer's name: " + offer.getThisVolunteer().getfullName(),
+                      "Volunteer's age: " + period.getYears(),
+                      "Volunteer's occupation: " + offer.getThisVolunteer().getOccupation() + "\n").forEach(System.out::println);
+        } catch(DateTimeParseException e){
+            System.out.println("Invalid date format");
+        }
     }
     public static void generateContinuousOption(){
         Stream.of("\nContinuous Option",
