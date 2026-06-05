@@ -5,11 +5,13 @@ public class Offer {
     private LocalDate offerDate;
     private String remarks;
     private String offerStatus;
+    private int offerID;
 
     private Volunteer thisVolunteer;
     private Request thisRequest;
 
     public Offer(LocalDate offerDate, String remarks, Volunteer thisVolunteer, Request thisRequest){
+        setOfferID(validateOfferID(offerID));
         setOfferDate(offerDate);
         setRemarks(remarks);
         setThisVolunteer(thisVolunteer);
@@ -27,6 +29,10 @@ public class Offer {
 
     public void setOfferStatus(String offerStatus){
         this.offerStatus = offerStatus;
+    }
+
+    public void setOfferID(int offerID){
+        this.offerID = offerID;
     }
 
     public void setThisVolunteer(Volunteer thisVolunteer){
@@ -49,11 +55,22 @@ public class Offer {
         return offerStatus;
     }
 
+    public int getOfferID(){
+        return offerID;
+    }
+
     public Volunteer getThisVolunteer(){
         return thisVolunteer;
     }
 
     public Request getThisRequest(){
         return thisRequest;
+    }
+
+    public int validateOfferID(int validID){
+        if((validID < 100000) || (validID > 999999)){
+            validID = (int) (Math.random() * 900000) + 100000;
+        }
+        return validID;
     }
 }

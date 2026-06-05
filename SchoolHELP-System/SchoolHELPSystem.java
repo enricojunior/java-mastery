@@ -697,10 +697,11 @@ public class SchoolHELPSystem {
     }
     public static void generateOfferList(Request request){
         System.out.println("Request's description: " + request.getDescription());
-        System.out.println("\nOffer Date\tOffer Status\tRemarks");
+        System.out.println("\nOffer Date\tOffer ID\tOffer Status\tRemarks");
 
         for(Offer offer : request.getOfferList()){
             System.out.println(offer.getOfferDate() + "\t" + 
+                               offer.getOfferID() + "\t" +
                                offer.getOfferStatus() + "\t\t" + 
                                offer.getRemarks());
         }
