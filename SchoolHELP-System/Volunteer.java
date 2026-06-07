@@ -39,4 +39,10 @@ public class Volunteer extends User {
     public void addOffer(Offer newOffer){
         getOfferList().add(newOffer);
     }
+
+    public ArrayList<Offer> filteredOfferList(){
+        ArrayList<Offer> filteredOfferList = new ArrayList<>();
+        getOfferList().stream().filter(e -> e.getOfferStatus().equals("ACCEPTED") || e.getOfferStatus().equals("REJECTED")).forEach(filteredOfferList::add);
+        return filteredOfferList;
+    }
 }

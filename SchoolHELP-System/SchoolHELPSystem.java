@@ -433,68 +433,110 @@ public class SchoolHELPSystem {
                             
                             if(sortedAllRequests.isEmpty()){
                                 System.out.println("Sorry. There are not any requests available.\n");
-                                SchoolAdministratorMenu();
+                                break;
                             } else {
-                                generateViewRequestsFromThisSchool(sortedAllRequests);
-                                System.out.println("\n");
+                                boolean requestSelectionLoop = true;
+                                while(requestSelectionLoop){
+                                    generateViewRequestsFromThisSchool(sortedAllRequests);
+                                    System.out.println("\n");
 
-                                int selection;
-                                System.out.print("Select the request by its ID to view more details: ");
-                                selection = Integer.parseInt(System.console().readLine());
+                                    int selection;
+                                    System.out.print("Select the request by its ID to view more details ('0' to return): ");
+                                    selection = Integer.parseInt(System.console().readLine());
 
-                                Request choosedRequest = sortedAllRequests.stream().filter(e -> e.getRequestID() == selection)
-                                                                          .findFirst().orElse(null);
-                                if(choosedRequest != null){
-                                    if(choosedRequest.getOfferList().isEmpty()) {
-                                        System.out.println("\nSorry. There aren't any offers available for this request.\n");
-                                    } else if(choosedRequest.getRequestStatus().equals("CLOSED")) {
-                                        System.out.println("\nSorry. This request has been closed.\n");
-                                    } else {
-                                        generateOfferSelection(choosedRequest);
-                                        
-                                        int secondSelection;
-                                        System.out.print("Select the offer for the request by its ID: ");
-                                        secondSelection = Integer.parseInt(System.console().readLine());
-                                        
-                                        Offer selectedOffer = (choosedRequest.getOfferList()).stream().filter(e -> e.getOfferID() == secondSelection)
-                                                                                             .findFirst().orElse(null);
-                                        if(selectedOffer != null){
-                                            generateOfferDetails(selectedOffer);
+                                    if(selection == 0){
+                                        requestSelectionLoop = false;
+                                        break;
+                                    }
 
-                                            System.out.print("Would you like to accept the offer (y/n): ");
-                                            String choice = (System.console().readLine());
-                                            
-                                            if(choice.equalsIgnoreCase("y")){
-                                                System.out.println("Offer's status is updated to ACCEPTED.");
-                                                selectedOffer.setOfferStatus("ACCEPTED");
-                                            } else if(choice.equalsIgnoreCase("n")){
-                                                System.out.println("Offer's status is updated to REJECTED.");
-                                                selectedOffer.setOfferStatus("REJECTED");
-                                            } else {
-                                                System.out.println("ALERT: Invalid choice selection.");
-                                                SchoolAdministratorMenu();
+                                    Request choosedRequest = sortedAllRequests.stream().filter(e -> e.getRequestID() == selection)
+                                                                              .findFirst().orElse(null);
+                                    if(choosedRequest != null){
+                                        if(choosedRequest.getOfferList().isEmpty()) {
+                                            System.out.println("\nSorry. There aren't any offers available for this request.\n");
+                                            continue;
+                                        } else if(choosedRequest.getRequestStatus().equals("CLOSED")) {
+                                            System.out.println("\nSorry. This request has been closed.\n");
+                                            continue;
+                                        } else {
+                                            boolean offerSelectionLoop = true;
+                                            while(offerSelectionLoop){
+                                                generateOfferSelection(choosedRequest);
+
+                                                int secondSelection;
+                                                System.out.print("Select the offer for the request by its ID: ");
+                                                secondSelection = Integer.parseInt(System.console().readLine());
+
+                                                if(secondSelection == 0){
+                                                    offerSelectionLoop = false;
+                                                    break;
+                                                }
+
+                                                Offer selectedOffer = (choosedRequest.getOfferList()).stream().filter(e -> e.getOfferID() == secondSelection)
+                                                                                                     .findFirst().orElse(null);
+                                                if(selectedOffer != null){
+                                                    if(selectedOffer.getOfferStatus().equals("ACCEPTED")){
+                                                        System.out.println("This offer has already been accepted. Please choose another offer.\n");
+                                                        SchoolAdministratorMenu();
+                                                    } else if(selectedOffer.getOfferStatus().equals("REJECTED")){
+                                                        System.out.println("This offer has already been rejected. Please choose another offer.\n");
+                                                        SchoolAdministratorMenu();
+                                                    } 
+                                                    
+                                                    generateOfferDetails(selectedOffer);
+
+                                                    System.out.print("Would you like to accept the offer (y/n): ");
+                                                    String choice = (System.console().readLine());
+
+                                                    if(choice.equalsIgnoreCase("y")){
+                                                        System.out.println("Offer's status is updated to ACCEPTED.");
+                                                        System.out.println("An email has been sent to the volunteer: " + selectedOffer.getThisVolunteer().getfullName() +
+                                                                        " to inform that the offer has been accepted.\n");
+                                                        selectedOffer.setOfferStatus("ACCEPTED");
+                                                    } else if(choice.equalsIgnoreCase("n")){
+                                                        System.out.println("Offer's status is updated to REJECTED.");
+                                                        System.out.println("An email has been sent to the volunteer: " + selectedOffer.getThisVolunteer().getfullName() +
+                                                                        " to inform that the offer has been rejected.\n");
+                                                        selectedOffer.setOfferStatus("REJECTED");
+                                                    } else {
+                                                        System.out.println("ALERT: Invalid choice selection.");
+                                                        continue;
+                                                    }
+
+                                                    System.out.print("Would you like to accept another offer (y/n): ");
+                                                    String acceptAnother = (System.console().readLine());
+                                                    
+                                                    if(acceptAnother.equalsIgnoreCase("y")){
+                                                        continue; 
+                                                    } else {
+                                                        offerSelectionLoop = false;
+                                                        break;
+                                                    } 
+                                                } else {
+                                                    System.out.println("\nSorry. Offer is not found based on the inputted ID.");
+                                                    SchoolAdministratorMenu();
+                                                }
                                             }
 
+                                            System.out.println();
                                             System.out.print("Would you like to close this request (y/n): ");
                                             String nextChoice = (System.console().readLine());
                                             
-                                            if(choice.equalsIgnoreCase("y")){
+                                            if(nextChoice.equalsIgnoreCase("y")){
                                                 System.out.println("Request's status is set to CLOSED.");
+                                                requestSelectionLoop = false;
                                                 choosedRequest.setRequestStatus("CLOSED");
-                                            } else if(choice.equalsIgnoreCase("n")){
+                                            } else if(nextChoice.equalsIgnoreCase("n")){
                                                 System.out.println("Request's status remains in default status.");
+                                                requestSelectionLoop = false;
                                             } else {
                                                 System.out.println("ALERT: Invalid choice selection.");
                                                 SchoolAdministratorMenu();
                                             }
-                                        } else {
-                                            System.out.println("\nSorry. Offer is not found based on the inputted ID.");
-                                            SchoolAdministratorMenu();
                                         }
+                                    } else {
+                                        System.out.println("\nSorry. Request is not found based on the inputted ID.");
                                     }
-                                } else {
-                                    System.out.println("\nSorry. Request is not found based on the inputted ID.");
-                                    SchoolAdministratorMenu();
                                 }
                             }
                         } catch(Exception e){
@@ -616,12 +658,6 @@ public class SchoolHELPSystem {
                                                         Offer newOffer = submitOffer(loggedVolunteer, selectedRequest);
                                                         loggedVolunteer.addOffer(newOffer);
                                                         selectedRequest.addOffer(newOffer);
-
-                                                        // Test it to ensure it works
-                                                        for(Offer o : selectedRequest.getOfferList()){
-                                                            System.out.println(o.getRemarks());
-                                                        }
-                                                        
                                                         break;
                                                     case 0:
                                                         continuousLoop = false;
@@ -641,6 +677,13 @@ public class SchoolHELPSystem {
                                     }
                                 } 
                             }
+                        } catch(Exception e){
+                            System.out.println("\n\nALERT: " + e.getMessage());
+                        }
+                        break;
+                    case 2:
+                        try {
+                            System.out.println("");
                         } catch(Exception e){
                             System.out.println("\n\nALERT: " + e.getMessage());
                         }
