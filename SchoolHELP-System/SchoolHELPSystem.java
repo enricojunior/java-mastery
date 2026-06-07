@@ -683,7 +683,21 @@ public class SchoolHELPSystem {
                         break;
                     case 2:
                         try {
-                            System.out.println("");
+                            ArrayList<Offer> offers = loggedVolunteer.filteredOfferList();
+                            if(offers.isEmpty()){
+                                System.out.println("\nSorry. Your email inbox is empty.\n");
+                            } else {
+                                for(Offer offer : offers){
+                                    if(offer.getOfferStatus().equals("ACCEPTED")){
+                                        Stream.of("Offer ID: " + offer.getOfferID() + ". Status: ACCEPTED.",
+                                                  "Your offer with the remarks " + offer.getRemarks() + " has been accepted by " + offer.getThisRequest().getThisSchool().getSchoolName() + ".\n")
+                                                  .forEach(System.out::println);
+                                    } else if(offer.getOfferStatus().equals("REJECTED")){
+                                        Stream.of("Offer ID: " + offer.getOfferID() + ". Status: REJECTED.",
+                                                  "We regret to inform you that your offer has been rejected.\n").forEach(System.out::println);
+                                    } // without else-statement
+                                }
+                            }
                         } catch(Exception e){
                             System.out.println("\n\nALERT: " + e.getMessage());
                         }
